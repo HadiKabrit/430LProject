@@ -55,7 +55,7 @@ class NavDrawer extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
-            onTap: () => {Navigator.pushReplacementNamed(context, '/Landing')},
+            onTap: () => {Navigator.pushNamed(context, '/Landing')},
             tileColor:
                 (pageRouteName == '/Landing') ? primaryBlue : Colors.white,
           ),

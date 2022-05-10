@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile430lproject/login.dart';
+import 'package:mobile430lproject/register.dart';
+
 import 'package:mobile430lproject/wrapper.dart';
 
 import 'home_screen.dart';
@@ -29,6 +32,8 @@ class MyApp extends StatelessWidget {
         '/': (context) => const Wrapper(),
         '/Home': (context) => const HomeScreen(),
         '/Landing': (context) => const LandingScreen(),
+        '/SignIn': (context) => const SignIn(),
+        '/Register': (context) => const SignUp(),
         // '/Insights': (context) => const WeeklyInsightsScreen(),
         // '/ItemInfo': (context) => const ItemInfoScreen(),
         // '/RecipeItemInfo': (context) => const RecipeItemInfoScreen(),
@@ -40,7 +45,7 @@ class MyApp extends StatelessWidget {
         // '/CameraScreen': (context) => const CameraScreen(),
         // '/Bolus': (context) => const Bolus(),
         // '/RecipeList': (context) => const RecipeList(),
-        // '/SignIn': (context) => SignIn1(toggleView: () {}),
+
         // '/SignUp': (context) => SignUp1(),
       },
     );
