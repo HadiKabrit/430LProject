@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile430lproject/constants.dart';
+import 'package:mobile430lproject/models/rates.dart';
 import 'package:mobile430lproject/navdrawer.dart';
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,7 +16,31 @@ class HomeScreen extends StatefulWidget {
 
 enum calcType { buy, sell }
 
+Future<Rates> fetchRates() async {
+  var response = await http.get(
+    Uri.parse('$apiURL/exchangeRate'),
+  );
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    return Rates.fromJson(jsonDecode(response.body));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load Rates');
+  }
+}
+
 class _HomeScreenState extends State<HomeScreen> {
+  late Future<Rates> futureRates;
+  late Future<double> numberToBeCalc;
+
+  @override
+  void initState() {
+    super.initState();
+    futureRates = fetchRates();
+  }
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Future<void> showInformationDialog(BuildContext context) async {
     final Size size = MediaQuery.of(context).size;
@@ -140,6 +168,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    var buyRate = 0.0;
+    var sellRate = 0.0;
+    var numberToBeConverted = 0;
+    final TextEditingController _textEditingController =
+        TextEditingController();
+
     return SafeArea(
         child: Scaffold(
       // extendBodyBehindAppBar: true,
@@ -189,13 +223,38 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontSize: 36,
                                 fontFamily: "Inria Serif"),
                           ),
-                          Text(
-                            "27000",
-                            style: TextStyle(
-                                color: darkBlue,
-                                fontSize: 32,
-                                fontFamily: "Inria Serif"),
+                          FutureBuilder<Rates>(
+                            future: futureRates,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data!.buyRate == null) {
+                                  return const CircularProgressIndicator();
+                                } else {
+                                  buyRate = snapshot.data!.buyRate;
+                                  return Text(
+                                    snapshot.data!.buyRate.toString(),
+                                    style: TextStyle(
+                                        color: darkBlue,
+                                        fontSize: 32,
+                                        fontFamily: "Inria Serif"),
+                                  );
+                                }
+                              } else if (snapshot.hasError) {
+                                return Text('${snapshot.error}');
+                              }
+
+                              // By default, show a loading spinner.
+                              return const CircularProgressIndicator();
+                            },
                           ),
+
+                          // Text(
+                          //   "27000",
+                          //   style: TextStyle(
+                          //       color: darkBlue,
+                          //       fontSize: 32,
+                          //       fontFamily: "Inria Serif"),
+                          // ),
                         ],
                       ),
                       Column(
@@ -207,13 +266,37 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontSize: 36,
                                 fontFamily: "Inria Serif"),
                           ),
-                          Text(
-                            "26000",
-                            style: TextStyle(
-                                color: darkBlue,
-                                fontSize: 32,
-                                fontFamily: "Inria Serif"),
+                          FutureBuilder<Rates>(
+                            future: futureRates,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data!.buyRate == null) {
+                                  return const CircularProgressIndicator();
+                                } else {
+                                  sellRate = snapshot.data!.sellRate;
+                                  return Text(
+                                    snapshot.data!.sellRate.toString(),
+                                    style: TextStyle(
+                                        color: darkBlue,
+                                        fontSize: 32,
+                                        fontFamily: "Inria Serif"),
+                                  );
+                                }
+                              } else if (snapshot.hasError) {
+                                return Text('${snapshot.error}');
+                              }
+
+                              // By default, show a loading spinner.
+                              return const CircularProgressIndicator();
+                            },
                           ),
+                          // Text(
+                          //   "26000",
+                          //   style: TextStyle(
+                          //       color: darkBlue,
+                          //       fontSize: 32,
+                          //       fontFamily: "Inria Serif"),
+                          // ),
                         ],
                       ),
                     ],
@@ -282,13 +365,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
                       onChanged: (value) {
-                        setState(() {});
+                        numberToBeConverted = int.parse(value);
                       },
+                      // controller: _textEditingController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: const InputDecoration(
                         hintText: "Input Amount to be converted",
                         border: OutlineInputBorder(),
                       ),
-                      keyboardType: TextInputType.number,
                     ),
                   ),
                   SizedBox(
@@ -337,6 +422,57 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontSize: 48,
                         fontFamily: "Inria Serif"),
                   ),
+                  // StatefulBuilder(
+                  //     builder: (BuildContext context, StateSetter setState) {
+                  //   return Text(
+                  //     (buyRate * double.parse("1")).toString(),
+                  //     style: TextStyle(
+                  //         color: darkBlue,
+                  //         fontSize: 48,
+                  //         fontFamily: "Inria Serif"),
+                  //   );
+                  // }),
+
+                  FutureBuilder<Rates>(
+                    future: futureRates,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data!.buyRate == null) {
+                          return const CircularProgressIndicator();
+                        } else {
+                          buyRate = snapshot.data!.buyRate;
+                          return Text(
+                            snapshot.data!.buyRate.toString(),
+                            style: TextStyle(
+                                color: darkBlue,
+                                fontSize: 32,
+                                fontFamily: "Inria Serif"),
+                          );
+                        }
+                      } else if (snapshot.hasError) {
+                        return Text('${snapshot.error}');
+                      }
+
+                      // By default, show a loading spinner.
+                      return const CircularProgressIndicator();
+                    },
+                  ),
+                  _calctype == calcType.buy
+                      ? Text(
+                          // buyRate.toString()
+                          numberToBeConverted.toString(),
+                          style: TextStyle(
+                              color: darkBlue,
+                              fontSize: 48,
+                              fontFamily: "Inria Serif"),
+                        )
+                      : Text(
+                          numberToBeConverted.toString(),
+                          style: TextStyle(
+                              color: darkBlue,
+                              fontSize: 48,
+                              fontFamily: "Inria Serif"),
+                        ),
                 ],
               ),
             ),
