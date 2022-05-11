@@ -52,6 +52,7 @@ Future<void> addTransaction(Transaction transaction) async {
           ));
       if (response.body.isNotEmpty) {
         var data = json.decode(response.body);
+        print(data);
       }
     } else {
       var response = await http.post(Uri.parse('$apiURL/transaction'),
@@ -68,6 +69,7 @@ Future<void> addTransaction(Transaction transaction) async {
           ));
       if (response.body.isNotEmpty) {
         var data = json.decode(response.body);
+        print(data);
       }
     }
   } catch (error) {
@@ -85,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
     futureRates = fetchRates();
   }
 
+  calcType? _calctype1 = calcType.buy;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Future<void> showInformationDialog(BuildContext context) async {
     final Size size = MediaQuery.of(context).size;
@@ -164,10 +167,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     leading: Radio<calcType>(
                       value: calcType.buy,
-                      groupValue: _calctype,
+                      groupValue: _calctype1,
                       onChanged: (calcType? value) {
                         setState(() {
-                          _calctype = value;
+                          _calctype1 = value;
                         });
                       },
                     ),
@@ -182,10 +185,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     leading: Radio<calcType>(
                       value: calcType.sell,
-                      groupValue: _calctype,
+                      groupValue: _calctype1,
                       onChanged: (calcType? value) {
                         setState(() {
-                          _calctype = value;
+                          _calctype1 = value;
                         });
                       },
                     ),
@@ -200,9 +203,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ElevatedButton(
                   onPressed: () async {
                     var usdtolbp = false;
-                    if (_calctype == calcType.buy) {
+                    if (_calctype1 == calcType.sell) {
                       usdtolbp = false;
-                    } else if (_calctype == calcType.buy) {
+                    } else if (_calctype1 == calcType.buy) {
                       usdtolbp = true;
                     }
                     Transaction transaction = Transaction(
