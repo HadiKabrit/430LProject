@@ -47,7 +47,7 @@ Future<void> addTransaction(Transaction transaction) async {
             {
               'usd_amount': transaction.usdAmount,
               'lbp_amount': transaction.lbpAmount,
-              "usd_to_lbp": transaction.usdtolbp
+              'usd_to_lbp': transaction.usdtolbp
             },
           ));
       if (response.body.isNotEmpty) {

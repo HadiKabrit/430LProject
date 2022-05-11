@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile430lproject/displayOffers/offersPage.dart';
+import 'package:mobile430lproject/graphs.dart';
 import 'package:mobile430lproject/login.dart';
 import 'package:mobile430lproject/register.dart';
 import 'package:mobile430lproject/displayTransactions/user_transactions.dart';
@@ -36,6 +38,8 @@ class MyApp extends StatelessWidget {
         '/SignIn': (context) => const SignIn(),
         '/Register': (context) => const SignUp(),
         '/Transactions': (context) => const UserTransactions(),
+        '/Offers': (context) => const OffersPage(),
+        '/Graphs': (context) => const GraphPage(),
 
         // '/Insights': (context) => const WeeklyInsightsScreen(),
         // '/ItemInfo': (context) => const ItemInfoScreen(),

@@ -2,49 +2,49 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mobile430lproject/constants.dart';
-import 'package:mobile430lproject/displayTransactions/transaction_tile.dart';
-import 'package:mobile430lproject/login.dart';
-import 'package:mobile430lproject/models/transactions.dart';
-import 'package:mobile430lproject/models/transactionss.dart';
+import 'package:mobile430lproject/displayOffers/offerTile.dart';
+import 'package:mobile430lproject/models/offers.dart';
 import 'package:mobile430lproject/navdrawer.dart';
 import 'package:http/http.dart' as http;
 
-class UserTransactions extends StatefulWidget {
-  const UserTransactions({Key? key}) : super(key: key);
+class OffersPage extends StatefulWidget {
+  const OffersPage({Key? key}) : super(key: key);
 
   @override
-  State<UserTransactions> createState() => _UserTransactionsState();
+  State<OffersPage> createState() => _OffersPageState();
 }
 
-Future<List<Transactions>> fetchTransactions() async {
-  String? token = await storage.read(key: "token");
+Future<List<Offers>> fetchOffers() async {
+  // String? token = await storage.read(key: "token");
   var response = await http.get(
-    Uri.parse('$apiURL/transaction'),
-    headers: {'Authorization': 'Bearer $token'},
+    Uri.parse('$apiURL/offer/0/10'),
   );
+
+  List data = json.decode(response.body);
 
   if (response.body.isNotEmpty) {
     // Rates.fromJson(jsonDecode(response.body));
-    List data = json.decode(response.body);
 
-    List<Transactions> transactionsList = [];
+    print(data);
+    List<Offers> offersList = [];
 
     for (int i = 0; i < data.length; i++) {
-      Transactions T = Transactions.fromJson(data[i]);
-      transactionsList.add(T);
+      Offers O = Offers.fromJson(data[i]);
+      offersList.add(O);
     }
-    return transactionsList;
+
+    return offersList;
   }
   return [];
 }
 
-class _UserTransactionsState extends State<UserTransactions> {
-  late Future futureTransactions;
+class _OffersPageState extends State<OffersPage> {
+  late Future futureOffers;
 
   @override
   void initState() {
     super.initState();
-    futureTransactions = fetchTransactions();
+    futureOffers = fetchOffers();
   }
 
   @override
@@ -68,16 +68,16 @@ class _UserTransactionsState extends State<UserTransactions> {
           centerTitle: true,
         ),
         body: FutureBuilder(
-          future: futureTransactions,
+          future: futureOffers,
           builder: (context, snapshot) {
-            List<Transactions> transactionsList =
-                snapshot.data as List<Transactions>;
+            List<Offers> offersList = snapshot.data as List<Offers>;
 
-            print(transactionsList);
+            // print(offersList);
             return SingleChildScrollView(
               child: Column(
                 children: [
-                  transactionListWidget(transactionList: transactionsList),
+                  // OffersListWidget(offersList: offersList),
+                  OffersListWidget(offersList: offersList),
                 ],
               ),
             );
@@ -88,20 +88,20 @@ class _UserTransactionsState extends State<UserTransactions> {
   }
 }
 
-class transactionListWidget extends StatefulWidget {
-  final List<Transactions> transactionList;
+class OffersListWidget extends StatefulWidget {
+  final List<Offers> offersList;
 
-  const transactionListWidget({Key? key, required this.transactionList})
+  const OffersListWidget({Key? key, required this.offersList})
       : super(key: key);
 
   @override
-  State<transactionListWidget> createState() => _transactionListWidgetState();
+  State<OffersListWidget> createState() => _OffersListWidgetState();
 }
 
-class _transactionListWidgetState extends State<transactionListWidget> {
-  Widget mappingFunction(Transactions transaction) {
-    return TransactionTile(
-      transaction: transaction,
+class _OffersListWidgetState extends State<OffersListWidget> {
+  Widget mappingFunction(Offers offer) {
+    return OfferTile(
+      offer: offer,
     );
   }
 
@@ -117,7 +117,7 @@ class _transactionListWidgetState extends State<transactionListWidget> {
           physics: const NeverScrollableScrollPhysics(),
           // scrollDirection: Axis.vertical,
           shrinkWrap: true,
-          children: widget.transactionList.map(mappingFunction).toList(),
+          children: widget.offersList.map(mappingFunction).toList(),
         ),
       ],
     );
