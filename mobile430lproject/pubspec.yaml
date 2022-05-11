@@ -49,6 +49,9 @@ dev_dependencies:
 
   http: ^0.13.4
 
+  # localstorage: ^3.0.6
+  flutter_secure_storage: ^5.0.2
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

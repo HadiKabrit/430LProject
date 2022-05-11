@@ -1,7 +1,14 @@
+import 'dart:convert';
+// import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:mobile430lproject/constants.dart';
 import 'package:mobile430lproject/loading.dart';
-
+import 'package:http/http.dart' as http;
+// import 'package:localstorage/localstorage.dart';
+// import 'package:localstore/localstore.dart';
+import 'package:mobile430lproject/models/user.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // import '../../custom/loading.dart';
 // import '../../services/auth.dart';
 
@@ -16,27 +23,46 @@ class SignIn extends StatefulWidget {
   State<SignIn> createState() => _SignInState();
 }
 
+final storage = new FlutterSecureStorage();
+
+Future<void> authenticate(User user) async {
+  try {
+    var response = await http.post(Uri.parse('$apiURL/authentication'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(
+            {'user_name': user.username, 'password': user.password}));
+
+    if (response.body.isNotEmpty) {
+      var data = json.decode(response.body);
+      // print(data['token'].toString());
+      await storage.write(key: 'token', value: data['token']);
+    }
+  } catch (error) {
+    print(error.toString());
+  }
+}
+
 class _SignInState extends State<SignIn> {
   // final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   String error = '';
   bool loading = false;
-  String email = '';
+  String username = '';
   String password = '';
 
-  void onChangedEmail(val) {
-    email = val;
+  void onChangedUsername(val) {
+    username = val;
   }
 
   void onChangedPass(val) {
     password = val;
   }
 
-  String? passwordValidator(val) {
-    return val!.length < 6 ? 'Enter a password 6+ chars long' : null;
-  }
+  // String? passwordValidator(val) {
+  //   return val!.length < 6 ? 'Enter a password 6+ chars long' : null;
+  // }
 
-  String? emailValidator(val) {
+  String? usernameValidator(val) {
     return val!.isEmpty ? 'Enter an email' : null;
   }
 
@@ -58,6 +84,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return SafeArea(
       child: loading
           ? const Loading()
@@ -137,10 +164,10 @@ class _SignInState extends State<SignIn> {
                             padding: const EdgeInsets.only(
                                 left: 50, right: 50, top: 60),
                             child: TextFormField(
-                              validator: (val) => emailValidator(val),
-                              onChanged: (val) => onChangedEmail(val),
+                              validator: (val) => usernameValidator(val),
+                              onChanged: (val) => onChangedUsername(val),
                               decoration: const InputDecoration(
-                                labelText: 'Email',
+                                labelText: 'User Name',
                               ),
                             ),
                           ),
@@ -148,7 +175,7 @@ class _SignInState extends State<SignIn> {
                             padding: const EdgeInsets.only(
                                 left: 50, right: 50, top: 50),
                             child: TextFormField(
-                              validator: (val) => passwordValidator(val),
+                              // validator: (val) => passwordValidator(val),
                               onChanged: (val) => onChangedPass(val),
                               obscureText: true,
                               decoration: const InputDecoration(
@@ -159,7 +186,19 @@ class _SignInState extends State<SignIn> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 40, top: 60),
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                User user = User(
+                                    username: username, password: password);
+                                print(user.username);
+                                print(user.password);
+                                await authenticate(user);
+                                var token = await storage.read(key: "token");
+                                if (token != "") {
+                                  Navigator.popUntil(
+                                      context, ModalRoute.withName('/Landing'));
+                                }
+                                print(token.toString());
+                              },
                               // => signIn(),
                               style: ButtonStyle(
                                 minimumSize: MaterialStateProperty.all<Size>(

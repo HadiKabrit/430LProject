@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile430lproject/constants.dart';
+import 'package:mobile430lproject/login.dart';
 import 'package:mobile430lproject/models/rates.dart';
+import 'package:mobile430lproject/models/transactions.dart';
 import 'package:mobile430lproject/navdrawer.dart';
 import 'package:http/http.dart' as http;
 
@@ -31,6 +33,48 @@ Future<Rates> fetchRates() async {
   }
 }
 
+Future<void> addTransaction(Transaction transaction) async {
+  try {
+    String? token = await storage.read(key: "token");
+    if (token != "") {
+      var response = await http.post(Uri.parse('$apiURL/transaction'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+          body: jsonEncode(
+            {
+              'usd_amount': transaction.usdAmount,
+              'lbp_amount': transaction.lbpAmount,
+              "usd_to_lbp": transaction.usdtolbp
+            },
+          ));
+      if (response.body.isNotEmpty) {
+        var data = json.decode(response.body);
+      }
+    } else {
+      var response = await http.post(Uri.parse('$apiURL/transaction'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: jsonEncode(
+            {
+              'usd_amount': transaction.usdAmount,
+              'lbp_amount': transaction.lbpAmount,
+              "usd_to_lbp": transaction.usdtolbp
+            },
+          ));
+      if (response.body.isNotEmpty) {
+        var data = json.decode(response.body);
+      }
+    }
+  } catch (error) {
+    print(error.toString());
+  }
+}
+
 class _HomeScreenState extends State<HomeScreen> {
   late Future<Rates> futureRates;
   late Future<double> numberToBeCalc;
@@ -51,6 +95,18 @@ class _HomeScreenState extends State<HomeScreen> {
               TextEditingController();
           final TextEditingController _textEditingController2 =
               TextEditingController();
+
+          String usdAmount = '';
+          String lbpAmount = '';
+
+          void onChangedUSDAmount(val) {
+            usdAmount = val;
+          }
+
+          void onChangedLBPAmount(val) {
+            lbpAmount = val;
+          }
+
           return AlertDialog(
             content: Form(
               key: _formKey,
@@ -74,6 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     validator: (value) {
                       return value!.isNotEmpty ? null : "Invalid Field";
                     },
+                    onChanged: (val) => onChangedUSDAmount(val),
                     decoration:
                         const InputDecoration(hintText: "Enter USD Amount"),
                     controller: _textEditingController1,
@@ -87,6 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     validator: (value) {
                       return value!.isNotEmpty ? null : "Invalid Field";
                     },
+                    onChanged: (val) => onChangedLBPAmount(val),
                     decoration:
                         const InputDecoration(hintText: "Enter LBP Amount"),
                     controller: _textEditingController2,
@@ -140,7 +198,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.all(8.0),
                 alignment: Alignment.center,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    var usdtolbp = false;
+                    if (_calctype == calcType.buy) {
+                      usdtolbp = false;
+                    } else if (_calctype == calcType.buy) {
+                      usdtolbp = true;
+                    }
+                    Transaction transaction = Transaction(
+                        usdAmount: double.parse(usdAmount),
+                        lbpAmount: double.parse(lbpAmount),
+                        usdtolbp: usdtolbp);
+
+                    await addTransaction(transaction);
+                    setState(() {});
+                    Navigator.pop(context);
+                  },
                   child: const Text("Add",
                       style: TextStyle(
                         fontSize: 32,
@@ -165,14 +238,30 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   calcType? _calctype = calcType.buy;
+  double? numberToBeConverted = 0.0;
+  double? buyRate = 0.0;
+  double? sellRate = 0.0;
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    var buyRate = 0.0;
-    var sellRate = 0.0;
-    var numberToBeConverted = 0;
+    // var buyRate = 0.0;
+    // var sellRate = 0.0;
+
     final TextEditingController _textEditingController =
         TextEditingController();
+
+    void onChangedAmount(val) {
+      numberToBeConverted = val;
+    }
+
+    void getBuyRate(val) {
+      buyRate = val;
+    }
+
+    void getSellRate(val) {
+      sellRate = val;
+    }
 
     return SafeArea(
         child: Scaffold(
@@ -231,6 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return const CircularProgressIndicator();
                                 } else {
                                   buyRate = snapshot.data!.buyRate;
+                                  getBuyRate(buyRate);
                                   return Text(
                                     snapshot.data!.buyRate.toString(),
                                     style: TextStyle(
@@ -274,6 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return const CircularProgressIndicator();
                                 } else {
                                   sellRate = snapshot.data!.sellRate;
+                                  getSellRate(sellRate);
                                   return Text(
                                     snapshot.data!.sellRate.toString(),
                                     style: TextStyle(
@@ -365,8 +456,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
                       onChanged: (value) {
-                        numberToBeConverted = int.parse(value);
-                      },
+                        setState(() {
+                          numberToBeConverted = double.parse(value);
+                        });
+                      }
+                      // => onChangedAmount(double.parse(value))
+                      // numberToBeConverted = int.parse(value);
+
+                      ,
                       // controller: _textEditingController,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -433,44 +530,51 @@ class _HomeScreenState extends State<HomeScreen> {
                   //   );
                   // }),
 
-                  FutureBuilder<Rates>(
-                    future: futureRates,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        if (snapshot.data!.buyRate == null) {
-                          return const CircularProgressIndicator();
-                        } else {
-                          buyRate = snapshot.data!.buyRate;
-                          return Text(
-                            snapshot.data!.buyRate.toString(),
-                            style: TextStyle(
-                                color: darkBlue,
-                                fontSize: 32,
-                                fontFamily: "Inria Serif"),
-                          );
-                        }
-                      } else if (snapshot.hasError) {
-                        return Text('${snapshot.error}');
-                      }
+                  // FutureBuilder<Rates>(
+                  //   future: futureRates,
+                  //   builder: (context, snapshot) {
+                  //     if (snapshot.hasData) {
+                  //       if (snapshot.data!.buyRate == null) {
+                  //         return const CircularProgressIndicator();
+                  //       } else {
+                  //         buyRate = snapshot.data!.buyRate;
+                  //         return Text(
+                  //           snapshot.data!.buyRate.toString(),
+                  //           style: TextStyle(
+                  //               color: darkBlue,
+                  //               fontSize: 32,
+                  //               fontFamily: "Inria Serif"),
+                  //         );
+                  //       }
+                  //     } else if (snapshot.hasError) {
+                  //       return Text('${snapshot.error}');
+                  //     }
 
-                      // By default, show a loading spinner.
-                      return const CircularProgressIndicator();
-                    },
-                  ),
+                  //     // By default, show a loading spinner.
+                  //     return const CircularProgressIndicator();
+                  //   },
+                  // ),
                   _calctype == calcType.buy
                       ? Text(
                           // buyRate.toString()
-                          numberToBeConverted.toString(),
+
+                          (((buyRate! * numberToBeConverted!) * 100).round() /
+                                      100)
+                                  .toString() +
+                              " LBP",
                           style: TextStyle(
                               color: darkBlue,
-                              fontSize: 48,
+                              fontSize: 32,
                               fontFamily: "Inria Serif"),
                         )
                       : Text(
-                          numberToBeConverted.toString(),
+                          (((sellRate! * numberToBeConverted!) * 100).round() /
+                                      100)
+                                  .toString() +
+                              " LBP",
                           style: TextStyle(
                               color: darkBlue,
-                              fontSize: 48,
+                              fontSize: 32,
                               fontFamily: "Inria Serif"),
                         ),
                 ],

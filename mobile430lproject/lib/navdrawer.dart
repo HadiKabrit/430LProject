@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mobile430lproject/constants.dart';
-// import 'package:flutter_application_1/custom/loading.dart';
-// import 'package:flutter_application_1/models/user.dart';
-// import 'package:flutter_application_1/screens/wrapper.dart';
-// import 'package:flutter_application_1/services/auth.dart';
-// import 'package:flutter_application_1/services/database.dart';
-// import 'package:provider/provider.dart';
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mobile430lproject/login.dart';
 
 class NavDrawer extends StatelessWidget {
+  String? token;
   NavDrawer({Key? key}) : super(key: key);
+
+  void isSignedIn(var token) async {
+    token = await storage.read(key: "token");
+  }
 
   // final _auth = AuthService();
   @override
@@ -27,6 +26,8 @@ class NavDrawer extends StatelessWidget {
     // builder: (context, snapshot) {
     //   if (snapshot.hasData) {
     //     Child? childData = snapshot.data;
+
+    isSignedIn(token);
 
     return Drawer(
       backgroundColor: Colors.white,
@@ -174,14 +175,18 @@ class NavDrawer extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
-            onTap: () {}
+            onTap: () async {
+              print(token);
+              await storage.write(key: 'token', value: "");
+              //  setState()
+            }
             //  async {
             //   await _auth.signOut();
 
             //   await Navigator.pushReplacementNamed(context, '/');
             // }
             ,
-          ),
+          )
         ],
       ),
     );
