@@ -194,8 +194,9 @@ class _SignInState extends State<SignIn> {
                                 await authenticate(user);
                                 var token = await storage.read(key: "token");
                                 if (token != "") {
-                                  Navigator.popUntil(
-                                      context, ModalRoute.withName('/Landing'));
+                                  Navigator.popAndPushNamed(context, '/Home');
+                                  // Navigator.popUntil(
+                                  //     context, ModalRoute.withName('/Landing'));
                                 }
                                 print(token.toString());
                               },

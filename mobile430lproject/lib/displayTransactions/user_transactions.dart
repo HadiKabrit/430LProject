@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mobile430lproject/constants.dart';
+import 'package:mobile430lproject/displayTransactions/transaction_tile.dart';
 import 'package:mobile430lproject/login.dart';
 import 'package:mobile430lproject/models/transactions.dart';
 import 'package:mobile430lproject/models/transactionss.dart';
@@ -72,10 +73,53 @@ class _UserTransactionsState extends State<UserTransactions> {
             List<Transactions> transactionsList =
                 snapshot.data as List<Transactions>;
 
-            return Text(transactionsList[0].lbpAmount.toString());
+            print(transactionsList);
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  transactionListWidget(transactionList: transactionsList),
+                ],
+              ),
+            );
           },
         ),
       ),
+    );
+  }
+}
+
+class transactionListWidget extends StatefulWidget {
+  final List<Transactions> transactionList;
+
+  const transactionListWidget({Key? key, required this.transactionList})
+      : super(key: key);
+
+  @override
+  State<transactionListWidget> createState() => _transactionListWidgetState();
+}
+
+class _transactionListWidgetState extends State<transactionListWidget> {
+  Widget mappingFunction(Transactions transaction) {
+    return TransactionTile(
+      transaction: transaction,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    return Column(
+      children: [
+        SizedBox(
+          height: 0.02 * size.height,
+        ),
+        ListView(
+          physics: const NeverScrollableScrollPhysics(),
+          // scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          children: widget.transactionList.map(mappingFunction).toList(),
+        ),
+      ],
     );
   }
 }

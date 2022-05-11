@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mobile430lproject/constants.dart';
 import 'package:mobile430lproject/loading.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:mobile430lproject/login.dart';
+import 'package:mobile430lproject/models/user.dart';
 // import '../../custom/loading.dart';
 // import '../../services/auth.dart';
 
@@ -16,25 +20,42 @@ class SignUp extends StatefulWidget {
   State<SignUp> createState() => _SignUpState();
 }
 
+Future<void> registerUser(User user) async {
+  try {
+    var response = await http.post(Uri.parse('$apiURL/user'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(
+            {'user_name': user.username, 'password': user.password}));
+
+    if (response.body.isNotEmpty) {
+      var data = json.decode(response.body);
+      print(data.toString());
+      // print(data['token'].toString());
+      await storage.write(key: 'token', value: data['token']);
+    }
+  } catch (error) {
+    print(error.toString());
+  }
+}
+
 class _SignUpState extends State<SignUp> {
   // final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   String error = '';
   bool loading = false;
-  String email = '';
+  String username = '';
   String password = '';
-
-  void onChangedEmail(val) {
-    email = val;
+  void onChangedUsername(val) {
+    username = val;
   }
 
   void onChangedPass(val) {
     password = val;
   }
 
-  String? passwordValidator(val) {
-    return val!.length < 6 ? 'Enter a password 6+ chars long' : null;
-  }
+  // String? passwordValidator(val) {
+  //   return val!.length < 6 ? 'Enter a password 6+ chars long' : null;
+  // }
 
   String? emailValidator(val) {
     return val!.isEmpty ? 'Enter an email' : null;
@@ -138,9 +159,9 @@ class _SignUpState extends State<SignUp> {
                                 left: 50, right: 50, top: 60),
                             child: TextFormField(
                               validator: (val) => emailValidator(val),
-                              onChanged: (val) => onChangedEmail(val),
+                              onChanged: (val) => onChangedUsername(val),
                               decoration: const InputDecoration(
-                                labelText: 'Email',
+                                labelText: 'User Name',
                               ),
                             ),
                           ),
@@ -148,7 +169,7 @@ class _SignUpState extends State<SignUp> {
                             padding: const EdgeInsets.only(
                                 left: 50, right: 50, top: 50),
                             child: TextFormField(
-                              validator: (val) => passwordValidator(val),
+                              // validator: (val) => passwordValidator(val),
                               onChanged: (val) => onChangedPass(val),
                               obscureText: true,
                               decoration: const InputDecoration(
@@ -159,7 +180,18 @@ class _SignUpState extends State<SignUp> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 40, top: 60),
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                User user = User(
+                                    username: username, password: password);
+                                await registerUser(user);
+                                var token = await storage.read(key: "token");
+                                if (token != "") {
+                                  Navigator.popAndPushNamed(context, '/Home');
+                                  // Navigator.popUntil(
+                                  //     context, ModalRoute.withName('/Landing'));
+                                }
+                                print(token.toString());
+                              },
                               // => signIn(),
                               style: ButtonStyle(
                                 minimumSize: MaterialStateProperty.all<Size>(
