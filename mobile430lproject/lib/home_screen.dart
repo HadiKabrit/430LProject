@@ -324,12 +324,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                 } else {
                                   buyRate = snapshot.data!.buyRate;
                                   getBuyRate(buyRate);
-                                  return Text(
-                                    snapshot.data!.buyRate.toString(),
-                                    style: TextStyle(
-                                        color: darkBlue,
-                                        fontSize: 32,
-                                        fontFamily: "Inria Serif"),
+                                  return Column(
+                                    children: [
+                                      Text(
+                                        snapshot.data!.buyRate.toString(),
+                                        style: TextStyle(
+                                            color: darkBlue,
+                                            fontSize: 32,
+                                            fontFamily: "Inria Serif"),
+                                      ),
+                                      Text(
+                                        '${((snapshot.data!.buyFluct * 100).round()) / 100} %',
+                                        style: TextStyle(
+                                            color: darkBlue,
+                                            fontSize: 28,
+                                            fontFamily: "Inria Serif"),
+                                      ),
+                                    ],
                                   );
                                 }
                               } else if (snapshot.hasError) {
@@ -368,12 +379,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                 } else {
                                   sellRate = snapshot.data!.sellRate;
                                   getSellRate(sellRate);
-                                  return Text(
-                                    snapshot.data!.sellRate.toString(),
-                                    style: TextStyle(
-                                        color: darkBlue,
-                                        fontSize: 32,
-                                        fontFamily: "Inria Serif"),
+                                  return Column(
+                                    children: [
+                                      Text(
+                                        snapshot.data!.sellRate.toString(),
+                                        style: TextStyle(
+                                            color: darkBlue,
+                                            fontSize: 32,
+                                            fontFamily: "Inria Serif"),
+                                      ),
+                                      Text(
+                                        '${((snapshot.data!.sellFluct * 100).round()) / 100} %',
+                                        style: TextStyle(
+                                            color: darkBlue,
+                                            fontSize: 28,
+                                            fontFamily: "Inria Serif"),
+                                      ),
+                                    ],
                                   );
                                 }
                               } else if (snapshot.hasError) {
@@ -396,7 +418,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   SizedBox(
-                    height: 0.05 * size.height,
+                    height: 0.02 * size.height,
                   ),
                   Row(
                     children: [

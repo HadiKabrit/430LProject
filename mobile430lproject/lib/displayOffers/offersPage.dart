@@ -17,7 +17,7 @@ class OffersPage extends StatefulWidget {
 Future<List<Offers>> fetchOffers() async {
   // String? token = await storage.read(key: "token");
   var response = await http.get(
-    Uri.parse('$apiURL/offer/0/10'),
+    Uri.parse('$apiURL/offer/list/0/10'),
   );
 
   List data = json.decode(response.body);
