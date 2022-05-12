@@ -267,7 +267,12 @@ class _OffersPageState extends State<OffersPage> {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    String? token = await storage.read(key: "token");
+                    if (token != "") {
+                      Navigator.pushNamed(context, "/MyOffers");
+                    }
+                  },
                   child: const Text("My Offers",
                       style: TextStyle(
                         fontSize: 18,

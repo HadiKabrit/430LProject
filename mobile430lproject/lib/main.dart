@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile430lproject/displayMyOffers/MyOffersPage.dart';
 import 'package:mobile430lproject/displayOffers/offersPage.dart';
 import 'package:mobile430lproject/graphs.dart';
 import 'package:mobile430lproject/login.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         '/Transactions': (context) => const UserTransactions(),
         '/Offers': (context) => const OffersPage(),
         '/Graphs': (context) => const GraphPage(),
+        '/MyOffers': (context) => const MyOffersPage(),
 
         // '/Insights': (context) => const WeeklyInsightsScreen(),
         // '/ItemInfo': (context) => const ItemInfoScreen(),
