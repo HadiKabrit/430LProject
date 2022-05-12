@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:mobile430lproject/constants.dart';
 import 'package:mobile430lproject/displayMyOffers/myOfferTile.dart';
-import 'package:mobile430lproject/displayOffers/offerTile.dart';
+
 import 'package:mobile430lproject/login.dart';
-import 'package:mobile430lproject/models/offer.dart';
+
 import 'package:mobile430lproject/models/offers.dart';
-import 'package:mobile430lproject/navdrawer.dart';
+
 import 'package:http/http.dart' as http;
 
 class MyOffersPage extends StatefulWidget {

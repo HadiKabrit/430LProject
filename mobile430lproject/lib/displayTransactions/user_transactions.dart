@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile430lproject/constants.dart';
 import 'package:mobile430lproject/displayTransactions/transaction_tile.dart';
 import 'package:mobile430lproject/login.dart';
-import 'package:mobile430lproject/models/transactions.dart';
+
 import 'package:mobile430lproject/models/transactionss.dart';
 import 'package:mobile430lproject/navdrawer.dart';
 import 'package:http/http.dart' as http;

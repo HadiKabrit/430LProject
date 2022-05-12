@@ -208,8 +208,6 @@ class _SignUpState extends State<SignUp> {
                                 var token = await storage.read(key: "token");
                                 if (token != "") {
                                   Navigator.popAndPushNamed(context, '/Home');
-                                  // Navigator.popUntil(
-                                  //     context, ModalRoute.withName('/Landing'));
                                 }
                                 print(token.toString());
                               },

@@ -1,22 +1,16 @@
 import 'dart:convert';
-// import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:mobile430lproject/constants.dart';
 import 'package:mobile430lproject/loading.dart';
 import 'package:http/http.dart' as http;
-// import 'package:localstorage/localstorage.dart';
-// import 'package:localstore/localstore.dart';
+
 import 'package:mobile430lproject/models/user.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-// import '../../custom/loading.dart';
-// import '../../services/auth.dart';
 
 class SignIn extends StatefulWidget {
-  // final Function toggleLanding;
   const SignIn({
     Key? key,
-    // required this.toggleLanding
   }) : super(key: key);
 
   @override
@@ -34,7 +28,7 @@ Future<void> authenticate(User user) async {
 
     if (response.body.isNotEmpty) {
       var data = json.decode(response.body);
-      // print(data['token'].toString());
+
       await storage.write(key: 'token', value: data['token']);
     }
   } catch (error) {
@@ -43,7 +37,6 @@ Future<void> authenticate(User user) async {
 }
 
 class _SignInState extends State<SignIn> {
-  // final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   String error = '';
   bool loading = false;
@@ -65,19 +58,6 @@ class _SignInState extends State<SignIn> {
   String? usernameValidator(val) {
     return val!.isEmpty ? 'Enter an email' : null;
   }
-
-  // void signIn() async {
-  //   if (_formKey.currentState!.validate()) {
-  //     setState(() => loading = true);
-  //     dynamic result = await _auth.signInWithEmailAndPassword(email, password);
-  //     if (result == null) {
-  //       setState(() {
-  //         loading = false;
-  //         error = 'Could not sign in with those credentials';
-  //       });
-  //     }
-  //   }
-  // }
 
   ScrollController controller = ScrollController();
 
@@ -195,8 +175,6 @@ class _SignInState extends State<SignIn> {
                                 var token = await storage.read(key: "token");
                                 if (token != "") {
                                   Navigator.popAndPushNamed(context, '/Home');
-                                  // Navigator.popUntil(
-                                  //     context, ModalRoute.withName('/Landing'));
                                 }
                                 print(token.toString());
                               },

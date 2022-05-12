@@ -13,23 +13,17 @@ import 'landing_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
-//added a comment
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return
-        // StreamProvider<CustomUser?>.value(
-        //   value: AuthService().user,
-        //   initialData: null,
-        // child:
-        MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
@@ -42,20 +36,6 @@ class MyApp extends StatelessWidget {
         '/Offers': (context) => const OffersPage(),
         '/Graphs': (context) => const GraphPage(),
         '/MyOffers': (context) => const MyOffersPage(),
-
-        // '/Insights': (context) => const WeeklyInsightsScreen(),
-        // '/ItemInfo': (context) => const ItemInfoScreen(),
-        // '/RecipeItemInfo': (context) => const RecipeItemInfoScreen(),
-        // '/LoggingFood': (context) => const LoggingFoodScreen(),
-        // '/NewRecipeSearch': (context) => const NewRecipeSearch(),
-        // '/InputNewRecipe': (context) => const InputNewRecipe(),
-        // '/DailyLogging': (context) => const DailyLogScreen(),
-        // '/Settings': (context) => const SettingsForm(),
-        // '/CameraScreen': (context) => const CameraScreen(),
-        // '/Bolus': (context) => const Bolus(),
-        // '/RecipeList': (context) => const RecipeList(),
-
-        // '/SignUp': (context) => SignUp1(),
       },
     );
   }
