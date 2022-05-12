@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mobile430lproject/constants.dart';
+import 'package:mobile430lproject/login.dart';
 import 'package:mobile430lproject/models/offers.dart';
 import 'package:mobile430lproject/models/transactionss.dart';
+import 'package:http/http.dart' as http;
 
 class MyOfferTile extends StatefulWidget {
   final Offers offer;
@@ -9,6 +13,19 @@ class MyOfferTile extends StatefulWidget {
 
   @override
   State<MyOfferTile> createState() => _MyOfferTileState();
+}
+
+Future<void> ManageMyOffer(String type, String id) async {
+  String? token = await storage.read(key: "token");
+  var response = await http.get(
+    Uri.parse('$apiURL/offer/close/${type}/${id}'),
+    headers: {'Authorization': 'Bearer $token'},
+  );
+
+  if (response.body.isNotEmpty) {
+    List data = json.decode(response.body);
+    print(data);
+  }
 }
 
 class _MyOfferTileState extends State<MyOfferTile> {
@@ -98,7 +115,10 @@ class _MyOfferTileState extends State<MyOfferTile> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await ManageMyOffer(
+                            "cancel", widget.offer.id.toString());
+                      },
                       child: const Text("Decline",
                           style: TextStyle(
                             fontSize: 18,
@@ -121,7 +141,10 @@ class _MyOfferTileState extends State<MyOfferTile> {
                       width: size.width * 0.01,
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await ManageMyOffer(
+                            "confirm", widget.offer.id.toString());
+                      },
                       child: const Text("Accept",
                           style: TextStyle(
                             fontSize: 18,

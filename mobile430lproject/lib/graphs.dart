@@ -56,18 +56,22 @@ class _GraphPageState extends State<GraphPage> {
     final Size size = MediaQuery.of(context).size;
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: primaryBlue,
       drawer: NavDrawer(),
       appBar: AppBar(
         toolbarHeight: 0.075 * size.height,
-        backgroundColor: Colors.white,
+        backgroundColor: primaryBlue,
         elevation: 0,
         iconTheme: const IconThemeData(
-          color: Color(0xFF65AFC1),
+          color: Colors.white,
         ),
         title: const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text("Daily Log"),
+          child: Text(
+            "Graphs",
+            style: TextStyle(
+                color: Colors.white, fontSize: 32, fontFamily: "Inria Serif"),
+          ),
         ),
         centerTitle: true,
       ),
@@ -88,10 +92,13 @@ class _GraphPageState extends State<GraphPage> {
                       style: TextStyle(
                         fontSize: 22,
                         fontFamily: 'Inria Serif',
+                        color: Colors.white,
                       )),
                   style: ButtonStyle(
                     minimumSize: MaterialStateProperty.all<Size>(
                         Size(size.width * 0.4, 55)),
+                    side: MaterialStateProperty.all(
+                        const BorderSide(color: Colors.white)),
                     backgroundColor:
                         MaterialStateProperty.all<Color>(primaryBlue),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -110,10 +117,12 @@ class _GraphPageState extends State<GraphPage> {
                   },
                   child: const Text("Sell USD Rate",
                       style: TextStyle(
-                        fontSize: 22,
-                        fontFamily: 'Inria Serif',
-                      )),
+                          fontSize: 22,
+                          fontFamily: 'Inria Serif',
+                          color: Colors.white)),
                   style: ButtonStyle(
+                    side: MaterialStateProperty.all(
+                        const BorderSide(color: Colors.white)),
                     minimumSize: MaterialStateProperty.all<Size>(
                         Size(size.width * 0.4, 55)),
                     backgroundColor:
@@ -127,10 +136,25 @@ class _GraphPageState extends State<GraphPage> {
                 ),
               ],
             ),
+            SizedBox(
+              height: 0.02 * size.height,
+            ),
             Container(
-              height: 0.7 * size.height,
+              height: 0.8 * size.height,
               width: size.width,
+              decoration: const BoxDecoration(
+                color:
+                    // Colors.black,
+                    Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+              ),
               child: Column(children: [
+                SizedBox(
+                  height: 0.05 * size.height,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -184,6 +208,9 @@ class _GraphPageState extends State<GraphPage> {
                     ),
                   ],
                 ),
+                SizedBox(
+                  height: 0.05 * size.height,
+                ),
                 FutureBuilder(
                   future: futurePoints,
                   builder: (context, snapshot) {
@@ -203,6 +230,9 @@ class _GraphPageState extends State<GraphPage> {
                     // By default, show a loading spinner.
                     return const CircularProgressIndicator();
                   },
+                ),
+                SizedBox(
+                  height: 0.05 * size.height,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

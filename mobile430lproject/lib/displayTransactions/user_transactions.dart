@@ -52,18 +52,22 @@ class _UserTransactionsState extends State<UserTransactions> {
     final Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: primaryBlue,
         drawer: NavDrawer(),
         appBar: AppBar(
           toolbarHeight: 0.075 * size.height,
-          backgroundColor: Colors.white,
+          backgroundColor: primaryBlue,
           elevation: 0,
           iconTheme: const IconThemeData(
-            color: Color(0xFF65AFC1),
+            color: Colors.white,
           ),
           title: const Padding(
             padding: EdgeInsets.all(8.0),
-            child: Text("Daily Log"),
+            child: Text(
+              "Transactions",
+              style: TextStyle(
+                  color: Colors.white, fontSize: 32, fontFamily: "Inria Serif"),
+            ),
           ),
           centerTitle: true,
         ),
@@ -79,10 +83,22 @@ class _UserTransactionsState extends State<UserTransactions> {
 
                 print(transactionsList);
                 return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      transactionListWidget(transactionList: transactionsList),
-                    ],
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color:
+                          // Colors.black,
+                          Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        transactionListWidget(
+                            transactionList: transactionsList),
+                      ],
+                    ),
                   ),
                 );
               }
