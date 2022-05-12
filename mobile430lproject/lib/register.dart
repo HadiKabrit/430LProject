@@ -20,12 +20,15 @@ class SignUp extends StatefulWidget {
   State<SignUp> createState() => _SignUpState();
 }
 
-Future<void> registerUser(User user) async {
+Future<void> registerUser(UserForSignUp user) async {
   try {
     var response = await http.post(Uri.parse('$apiURL/user'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(
-            {'user_name': user.username, 'password': user.password}));
+        body: jsonEncode({
+          'user_name': user.username,
+          'password': user.password,
+          "phone": user.phone
+        }));
 
     if (response.body.isNotEmpty) {
       var data = json.decode(response.body);
@@ -45,12 +48,17 @@ class _SignUpState extends State<SignUp> {
   bool loading = false;
   String username = '';
   String password = '';
+  String phone = '';
   void onChangedUsername(val) {
     username = val;
   }
 
   void onChangedPass(val) {
     password = val;
+  }
+
+  void onChangedPhone(val) {
+    phone = val;
   }
 
   // String? passwordValidator(val) {
@@ -125,9 +133,9 @@ class _SignUpState extends State<SignUp> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 0.075 * size.height,
-                    ),
+                    // SizedBox(
+                    //   height: 0.01 * size.height,
+                    // ),
                     SizedBox(
                       width: size.width,
                       child: Padding(
@@ -156,7 +164,7 @@ class _SignUpState extends State<SignUp> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(
-                                left: 50, right: 50, top: 60),
+                                left: 50, right: 50, top: 30),
                             child: TextFormField(
                               validator: (val) => emailValidator(val),
                               onChanged: (val) => onChangedUsername(val),
@@ -167,7 +175,18 @@ class _SignUpState extends State<SignUp> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
-                                left: 50, right: 50, top: 50),
+                                left: 50, right: 50, top: 30),
+                            child: TextFormField(
+                              // validator: (val) => (val),
+                              onChanged: (val) => onChangedPhone(val),
+                              decoration: const InputDecoration(
+                                labelText: 'Phone Number',
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 50, right: 50, top: 30),
                             child: TextFormField(
                               // validator: (val) => passwordValidator(val),
                               onChanged: (val) => onChangedPass(val),
@@ -181,8 +200,10 @@ class _SignUpState extends State<SignUp> {
                             padding: const EdgeInsets.only(bottom: 40, top: 60),
                             child: ElevatedButton(
                               onPressed: () async {
-                                User user = User(
-                                    username: username, password: password);
+                                UserForSignUp user = UserForSignUp(
+                                    username: username,
+                                    password: password,
+                                    phone: phone);
                                 await registerUser(user);
                                 var token = await storage.read(key: "token");
                                 if (token != "") {
