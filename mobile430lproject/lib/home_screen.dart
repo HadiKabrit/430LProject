@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile430lproject/constants.dart';
-import 'package:mobile430lproject/displayTransactions/user_transactions.dart';
+
 import 'package:mobile430lproject/login.dart';
 import 'package:mobile430lproject/models/rates.dart';
 import 'package:mobile430lproject/models/transactions.dart';
@@ -24,12 +24,8 @@ Future<Rates> fetchRates() async {
     Uri.parse('$apiURL/exchangeRate'),
   );
   if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
     return Rates.fromJson(jsonDecode(response.body));
   } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
     throw Exception('Failed to load Rates');
   }
 }
@@ -258,8 +254,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    // var buyRate = 0.0;
-    // var sellRate = 0.0;
 
     final TextEditingController _textEditingController =
         TextEditingController();
@@ -278,7 +272,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return SafeArea(
         child: Scaffold(
-      // extendBodyBehindAppBar: true,
       drawer: NavDrawer(),
       appBar: AppBar(
         toolbarHeight: 0.075 * size.height,
@@ -287,16 +280,10 @@ class _HomeScreenState extends State<HomeScreen> {
         iconTheme: const IconThemeData(
           color: Color(0xFF65AFC1),
         ),
-        title: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text("Daily Log"),
-        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Column(
-          // mainAxisSize: MainAxisSize.max,
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               height: 0.35 * size.height,
@@ -357,18 +344,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return Text('Not Set Yet');
                               }
 
-                              // By default, show a loading spinner.
                               return const CircularProgressIndicator();
                             },
                           ),
-
-                          // Text(
-                          //   "27000",
-                          //   style: TextStyle(
-                          //       color: darkBlue,
-                          //       fontSize: 32,
-                          //       fontFamily: "Inria Serif"),
-                          // ),
                         ],
                       ),
                       Column(
@@ -412,17 +390,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return Text("Not Set Yet");
                               }
 
-                              // By default, show a loading spinner.
                               return const CircularProgressIndicator();
                             },
                           ),
-                          // Text(
-                          //   "26000",
-                          //   style: TextStyle(
-                          //       color: darkBlue,
-                          //       fontSize: 32,
-                          //       fontFamily: "Inria Serif"),
-                          // ),
                         ],
                       ),
                     ],
@@ -499,12 +469,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             numberToBeConverted = double.parse(value);
                           }
                         });
-                      }
-                      // => onChangedAmount(double.parse(value))
-                      // numberToBeConverted = int.parse(value);
-
-                      ,
-                      // controller: _textEditingController,
+                      },
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: const InputDecoration(
@@ -559,41 +524,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontSize: 48,
                         fontFamily: "Inria Serif"),
                   ),
-                  // StatefulBuilder(
-                  //     builder: (BuildContext context, StateSetter setState) {
-                  //   return Text(
-                  //     (buyRate * double.parse("1")).toString(),
-                  //     style: TextStyle(
-                  //         color: darkBlue,
-                  //         fontSize: 48,
-                  //         fontFamily: "Inria Serif"),
-                  //   );
-                  // }),
-
-                  // FutureBuilder<Rates>(
-                  //   future: futureRates,
-                  //   builder: (context, snapshot) {
-                  //     if (snapshot.hasData) {
-                  //       if (snapshot.data!.buyRate == null) {
-                  //         return const CircularProgressIndicator();
-                  //       } else {
-                  //         buyRate = snapshot.data!.buyRate;
-                  //         return Text(
-                  //           snapshot.data!.buyRate.toString(),
-                  //           style: TextStyle(
-                  //               color: darkBlue,
-                  //               fontSize: 32,
-                  //               fontFamily: "Inria Serif"),
-                  //         );
-                  //       }
-                  //     } else if (snapshot.hasError) {
-                  //       return Text('${snapshot.error}');
-                  //     }
-
-                  //     // By default, show a loading spinner.
-                  //     return const CircularProgressIndicator();
-                  //   },
-                  // ),
                   _calctype == calcType.buy
                       ? Text(
                           // buyRate.toString()
