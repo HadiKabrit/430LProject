@@ -100,25 +100,25 @@ class NavDrawer extends StatelessWidget {
             tileColor:
                 (pageRouteName == '/Transactions') ? primaryBlue : Colors.white,
           ),
-          const SizedBox(
-            height: 8,
-          ),
-          ListTile(
-            // leading: const Icon(
-            //   Icons.restaurant,
-            //   color: Colors.white,
-            //   size: 28,
-            // ),
-            title: const Text(
-              'Statistics',
-              style: TextStyle(
-                // color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-            onTap: () => {Navigator.pushReplacementNamed(context, '/Stats')},
-            tileColor: (pageRouteName == '/Stats') ? primaryBlue : Colors.white,
-          ),
+          // const SizedBox(
+          //   height: 8,
+          // ),
+          // ListTile(
+          //   // leading: const Icon(
+          //   //   Icons.restaurant,
+          //   //   color: Colors.white,
+          //   //   size: 28,
+          //   // ),
+          //   title: const Text(
+          //     'Statistics',
+          //     style: TextStyle(
+          //       // color: Colors.white,
+          //       fontSize: 16,
+          //     ),
+          //   ),
+          //   onTap: () => {Navigator.pushReplacementNamed(context, '/Stats')},
+          //   tileColor: (pageRouteName == '/Stats') ? primaryBlue : Colors.white,
+          // ),
           const SizedBox(
             height: 8,
           ),

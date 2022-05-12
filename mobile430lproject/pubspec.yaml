@@ -52,6 +52,8 @@ dev_dependencies:
   # localstorage: ^3.0.6
   flutter_secure_storage: ^5.0.2
 
+  syncfusion_flutter_charts: any
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

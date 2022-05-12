@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mobile430lproject/constants.dart';
+import 'package:mobile430lproject/lineChart.dart';
+import 'package:mobile430lproject/models/points.dart';
 import 'package:mobile430lproject/navdrawer.dart';
+import 'package:http/http.dart' as http;
 
 class GraphPage extends StatefulWidget {
   const GraphPage({Key? key}) : super(key: key);
@@ -9,7 +14,43 @@ class GraphPage extends StatefulWidget {
   State<GraphPage> createState() => _GraphPageState();
 }
 
+String buyOrSell = "usd_to_lbp";
+
+String timePeriod = "1day";
+
+Future<List<Point>> fetchPoints() async {
+  // String? token = await storage.read(key: "token");
+  var response = await http.get(
+    Uri.parse('$apiURL/graph/${buyOrSell}/${timePeriod}'),
+  );
+
+  List data = json.decode(response.body);
+
+  if (response.body.isNotEmpty) {
+    // Rates.fromJson(jsonDecode(response.body));
+
+    print(data);
+    List<Point> pointsList = [];
+
+    for (int i = 0; i < data.length; i++) {
+      Point p = Point(X: data[i][0], Y: data[i][1]);
+      pointsList.add(p);
+    }
+
+    return pointsList;
+  }
+  return [];
+}
+
 class _GraphPageState extends State<GraphPage> {
+  late Future futurePoints;
+
+  @override
+  void initState() {
+    super.initState();
+    futurePoints = fetchPoints();
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -37,7 +78,12 @@ class _GraphPageState extends State<GraphPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      buyOrSell = "lbp_to_usd";
+                      futurePoints = fetchPoints();
+                    });
+                  },
                   child: const Text("Buy USD Rate",
                       style: TextStyle(
                         fontSize: 22,
@@ -56,7 +102,12 @@ class _GraphPageState extends State<GraphPage> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      buyOrSell = "usd_to_lbp";
+                      futurePoints = fetchPoints();
+                    });
+                  },
                   child: const Text("Sell USD Rate",
                       style: TextStyle(
                         fontSize: 22,
@@ -133,12 +184,36 @@ class _GraphPageState extends State<GraphPage> {
                     ),
                   ],
                 ),
-                Text("Graph"),
+                FutureBuilder(
+                  future: futurePoints,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data == null) {
+                        return const CircularProgressIndicator();
+                      } else {
+                        List<Point> pointsList = snapshot.data as List<Point>;
+
+                        // print(offersList);
+                        return LineChart(pointsList: pointsList);
+                      }
+                    } else if (snapshot.hasError) {
+                      return Text('Not Set Yet');
+                    }
+
+                    // By default, show a loading spinner.
+                    return const CircularProgressIndicator();
+                  },
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          timePeriod = "1day";
+                          futurePoints = fetchPoints();
+                        });
+                      },
                       child: const Text("1D",
                           style: TextStyle(
                             fontSize: 18,
@@ -158,7 +233,12 @@ class _GraphPageState extends State<GraphPage> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          timePeriod = "5days";
+                          futurePoints = fetchPoints();
+                        });
+                      },
                       child: const Text("5D",
                           style: TextStyle(
                             fontSize: 18,
@@ -178,7 +258,12 @@ class _GraphPageState extends State<GraphPage> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          timePeriod = "30days";
+                          futurePoints = fetchPoints();
+                        });
+                      },
                       child: const Text("MAX",
                           style: TextStyle(
                             fontSize: 18,
