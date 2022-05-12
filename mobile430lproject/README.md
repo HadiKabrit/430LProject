@@ -32,3 +32,5 @@ The functional documentation is already sent by mail explaining the functionalit
 
 The User Navigates the app using the Drawer on the top left corner of the application.
 when the drawer is opened, a list of pages is displayed to be chosen from.
+
+A Demo video is sent by mail.
