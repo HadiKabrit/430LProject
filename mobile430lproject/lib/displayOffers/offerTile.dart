@@ -28,46 +28,66 @@ class _OfferTileState extends State<OfferTile> {
                   style: TextStyle(color: primaryBlue, fontSize: 26)),
             ),
             // subtitle: Text('Carbs: ${food.carbs}g'),
-            subtitle: RichText(
-              // overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.start,
-              maxLines: 3,
-              text: TextSpan(
-                children: <TextSpan>[
-                  TextSpan(
-                    text: 'USD Amount: ',
-                    style: TextStyle(color: darkBlue, fontSize: 20),
-                  ),
-                  TextSpan(
-                    text: '${widget.offer.usdAmount} USD',
-                    style: TextStyle(color: primaryBlue, fontSize: 16),
-                  ),
-                  TextSpan(
-                    text: 'Rate: ',
-                    style: TextStyle(color: darkBlue, fontSize: 20),
-                  ),
-                  TextSpan(
-                    text: '${widget.offer.rate} LBP',
-                    style: TextStyle(color: primaryBlue, fontSize: 16),
-                  ),
-                  TextSpan(
-                    text: 'Phone Number: ',
-                    style: TextStyle(color: darkBlue, fontSize: 20),
-                  ),
-                  TextSpan(
-                    text: widget.offer.phoneNumber,
-                    style: TextStyle(color: primaryBlue, fontSize: 16),
-                  ),
-                  TextSpan(
-                    text: 'Date Added: ',
-                    style: TextStyle(color: darkBlue, fontSize: 20),
-                  ),
-                  TextSpan(
-                    text: widget.offer.addedDate,
-                    style: TextStyle(color: primaryBlue, fontSize: 16),
-                  ),
-                ],
-              ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                    // overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                    text: TextSpan(children: <TextSpan>[
+                      TextSpan(
+                        text: 'USD Amount: ',
+                        style: TextStyle(color: darkBlue, fontSize: 20),
+                      ),
+                      TextSpan(
+                        text: '${widget.offer.usdAmount} USD',
+                        style: TextStyle(color: primaryBlue, fontSize: 16),
+                      )
+                    ])),
+                RichText(
+                    // overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                    text: TextSpan(children: <TextSpan>[
+                      TextSpan(
+                        text: 'Rate: ',
+                        style: TextStyle(color: darkBlue, fontSize: 20),
+                      ),
+                      TextSpan(
+                        text: '${widget.offer.rate} LBP/1USD',
+                        style: TextStyle(color: primaryBlue, fontSize: 16),
+                      )
+                    ])),
+                RichText(
+                    // overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                    text: TextSpan(children: <TextSpan>[
+                      TextSpan(
+                        text: 'Phone Number: ',
+                        style: TextStyle(color: darkBlue, fontSize: 20),
+                      ),
+                      TextSpan(
+                        text: '+961 ${widget.offer.phoneNumber}',
+                        style: TextStyle(color: primaryBlue, fontSize: 16),
+                      )
+                    ])),
+                RichText(
+                    // overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                    text: TextSpan(children: <TextSpan>[
+                      TextSpan(
+                        text: 'Date Added: ',
+                        style: TextStyle(color: darkBlue, fontSize: 20),
+                      ),
+                      TextSpan(
+                        text: '${widget.offer.addedDate}',
+                        style: TextStyle(color: primaryBlue, fontSize: 16),
+                      )
+                    ])),
+              ],
             ),
             // trailing: Text(""),
           ),

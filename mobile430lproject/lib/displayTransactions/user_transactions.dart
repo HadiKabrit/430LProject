@@ -70,17 +70,27 @@ class _UserTransactionsState extends State<UserTransactions> {
         body: FutureBuilder(
           future: futureTransactions,
           builder: (context, snapshot) {
-            List<Transactions> transactionsList =
-                snapshot.data as List<Transactions>;
+            if (snapshot.hasData) {
+              if (snapshot.data == null) {
+                return const CircularProgressIndicator();
+              } else {
+                List<Transactions> transactionsList =
+                    snapshot.data as List<Transactions>;
 
-            print(transactionsList);
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  transactionListWidget(transactionList: transactionsList),
-                ],
-              ),
-            );
+                print(transactionsList);
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      transactionListWidget(transactionList: transactionsList),
+                    ],
+                  ),
+                );
+              }
+            } else if (snapshot.hasError) {
+              return Text("Not Available");
+            }
+
+            return const CircularProgressIndicator();
           },
         ),
       ),

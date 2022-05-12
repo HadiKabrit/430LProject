@@ -70,17 +70,25 @@ class _OffersPageState extends State<OffersPage> {
         body: FutureBuilder(
           future: futureOffers,
           builder: (context, snapshot) {
-            List<Offers> offersList = snapshot.data as List<Offers>;
+            if (snapshot.hasData) {
+              if (snapshot.data == null) {
+                return const CircularProgressIndicator();
+              } else {
+                List<Offers> offersList = snapshot.data as List<Offers>;
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      // OffersListWidget(offersList: offersList),
+                      OffersListWidget(offersList: offersList),
+                    ],
+                  ),
+                );
+              }
+            } else if (snapshot.hasError) {
+              return Text("Not Available");
+            }
 
-            // print(offersList);
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  // OffersListWidget(offersList: offersList),
-                  OffersListWidget(offersList: offersList),
-                ],
-              ),
-            );
+            return const CircularProgressIndicator();
           },
         ),
       ),
