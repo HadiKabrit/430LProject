@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile430lproject/constants.dart';
+import 'package:mobile430lproject/displayTransactions/user_transactions.dart';
 import 'package:mobile430lproject/login.dart';
 import 'package:mobile430lproject/models/rates.dart';
 import 'package:mobile430lproject/models/transactions.dart';
@@ -87,13 +88,13 @@ class _HomeScreenState extends State<HomeScreen> {
     futureRates = fetchRates();
   }
 
-  calcType? _calctype1 = calcType.buy;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Future<void> showInformationDialog(BuildContext context) async {
     final Size size = MediaQuery.of(context).size;
     return await showDialog(
         context: context,
         builder: (context) {
+          calcType? calctype1 = calcType.buy;
           final TextEditingController _textEditingController1 =
               TextEditingController();
           final TextEditingController _textEditingController2 =
@@ -157,42 +158,49 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     height: 0.03 * size.height,
                   ),
-                  ListTile(
-                    title: Text(
-                      'Buy USD',
-                      style: TextStyle(
-                          color: darkBlue,
-                          fontSize: 28,
-                          fontFamily: "Inria Serif"),
-                    ),
-                    leading: Radio<calcType>(
-                      value: calcType.buy,
-                      groupValue: _calctype1,
-                      onChanged: (calcType? value) {
-                        setState(() {
-                          _calctype1 = value;
-                        });
-                      },
-                    ),
-                  ),
-                  ListTile(
-                    title: Text(
-                      'Sell USD',
-                      style: TextStyle(
-                          color: darkBlue,
-                          fontSize: 28,
-                          fontFamily: "Inria Serif"),
-                    ),
-                    leading: Radio<calcType>(
-                      value: calcType.sell,
-                      groupValue: _calctype1,
-                      onChanged: (calcType? value) {
-                        setState(() {
-                          _calctype1 = value;
-                        });
-                      },
-                    ),
-                  ),
+                  StatefulBuilder(
+                      builder: (BuildContext context, StateSetter setState) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          title: Text(
+                            'Buy USD',
+                            style: TextStyle(
+                                color: darkBlue,
+                                fontSize: 28,
+                                fontFamily: "Inria Serif"),
+                          ),
+                          leading: Radio<calcType>(
+                            value: calcType.buy,
+                            groupValue: calctype1,
+                            onChanged: (calcType? value) {
+                              setState(() {
+                                calctype1 = value;
+                              });
+                            },
+                          ),
+                        ),
+                        ListTile(
+                          title: Text(
+                            'Sell USD',
+                            style: TextStyle(
+                                color: darkBlue,
+                                fontSize: 28,
+                                fontFamily: "Inria Serif"),
+                          ),
+                          leading: Radio<calcType>(
+                            value: calcType.sell,
+                            groupValue: calctype1,
+                            onChanged: (calcType? value) {
+                              setState(() {
+                                calctype1 = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
                 ],
               ),
             ),
@@ -203,10 +211,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ElevatedButton(
                   onPressed: () async {
                     var usdtolbp = false;
-                    if (_calctype1 == calcType.sell) {
-                      usdtolbp = false;
-                    } else if (_calctype1 == calcType.buy) {
+                    if (calctype1 == calcType.sell) {
                       usdtolbp = true;
+                    } else if (calctype1 == calcType.buy) {
+                      usdtolbp = false;
                     }
                     Transaction transaction = Transaction(
                         usdAmount: double.parse(usdAmount),
@@ -214,7 +222,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         usdtolbp: usdtolbp);
 
                     await addTransaction(transaction);
-                    setState(() {});
+                    setState(() {
+                      futureRates = fetchRates();
+                    });
                     Navigator.pop(context);
                   },
                   child: const Text("Add",
@@ -481,8 +491,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
                       onChanged: (value) {
+                        print(value);
                         setState(() {
-                          numberToBeConverted = double.parse(value);
+                          if (value == "") {
+                            numberToBeConverted = 0.0;
+                          } else {
+                            numberToBeConverted = double.parse(value);
+                          }
                         });
                       }
                       // => onChangedAmount(double.parse(value))
