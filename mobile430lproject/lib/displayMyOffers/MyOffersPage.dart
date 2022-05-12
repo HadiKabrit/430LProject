@@ -67,9 +67,13 @@ class _MyOffersPageState extends State<MyOffersPage> {
           iconTheme: const IconThemeData(
             color: Color(0xFF65AFC1),
           ),
-          title: const Padding(
+          title: Padding(
             padding: EdgeInsets.all(8.0),
-            child: Text("Daily Log"),
+            child: Text(
+              "My Offers",
+              style: TextStyle(
+                  color: primaryBlue, fontSize: 32, fontFamily: "Inria Serif"),
+            ),
           ),
           centerTitle: true,
         ),

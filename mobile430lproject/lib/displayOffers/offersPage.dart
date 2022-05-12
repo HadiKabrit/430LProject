@@ -22,7 +22,7 @@ enum calcType { buy, sell }
 Future<List<Offers>> fetchOffers() async {
   // String? token = await storage.read(key: "token");
   var response = await http.get(
-    Uri.parse('$apiURL/offer/list/0/10'),
+    Uri.parse('$apiURL/offer/list/0/99'),
   );
 
   List data = json.decode(response.body);
@@ -295,7 +295,10 @@ class _OffersPageState extends State<OffersPage> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    await showInformationDialog(context);
+                    String? token = await storage.read(key: "token");
+                    if (token != "") {
+                      await showInformationDialog(context);
+                    }
                   },
                   child: const Text("Add Offer",
                       style: TextStyle(
@@ -333,6 +336,16 @@ class _OffersPageState extends State<OffersPage> {
                   child: Column(
                     children: [
                       // OffersListWidget(offersList: offersList),
+                      SizedBox(
+                        height: 0.02 * size.height,
+                      ),
+                      Text(
+                        "All Offers",
+                        style: TextStyle(
+                            color: darkBlue,
+                            fontSize: 32,
+                            fontFamily: "Inria Serif"),
+                      ),
                       OffersListWidget(offersList: offersList),
                     ],
                   ),
